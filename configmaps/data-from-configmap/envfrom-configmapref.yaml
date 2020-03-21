@@ -1,0 +1,31 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dependency-configs
+  namespace: default
+data:
+  redis_masters: |-
+    redis://sks-redis-0.sks-redis:6379
+    redis://sks-redis-1.sks-redis:6379
+    redis://sks-redis-2.sks-redis:6379
+    redis://sks-redis-3.sks-redis:6379
+    redis://sks-redis-4.sks-redis:6379
+    redis://sks-redis-5.sks-redis:6379
+  ldap_master: |-
+    ldap://sks-ldap-0.sks-ldap:389
+    ldap://sks-ldap-1.sks-ldap:389
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sks-pod
+spec:
+  containers:
+    - name: sks-container
+      image: busybox:latest
+      command: [ "/bin/sh", "-c", "env" ]
+      envFrom:
+        - configMapRef:
+            name: dependency-configs
+  restartPolicy: Never
